@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.navbar {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgb(44, 42, 42);
+}
+.logo {
+  height: 50%;
+  width: 50%;
+}
+.cart-icon {
+  margin-top: 6px;
+  height: 8vh;
+  margin-left: 25rem;
+}
+.nav-links {
+  height: 50%;
+  width: 50%;
+  padding: 20px 20px;
+  display: flex;
+  align-items: start;
+  list-style: none;
+  gap: 70px;
+  padding-right: 20rem;
+}
+#navtext {
+  color: #fff;
+  font-size: 20px;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.1s ease-in-out, transform 0.1s ease-in-out;
+}
+#navtext:hover {
+  color: #706d6c;
+  transform: scale(1.1);
+}

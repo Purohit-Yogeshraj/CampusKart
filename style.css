@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgb(44, 42, 42);
+  background: #1a1a1a;
 }
 .logo {
   height: 50%;
@@ -41,4 +41,128 @@
 #navtext:hover {
   color: #706d6c;
   transform: scale(1.1);
+  text-decoration: underline #706d6c;
+}
+.hero-section {
+  height: 60vh;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 80px 60px;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2a2a 70%, #2b84ea 100%);
+  color: white;
+}
+.hero-content h1 span {
+  color: #f1c40f;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(241, 196, 15, 0.6);
+  animation: fadeUp 1s ease-in-out;
+}
+.hero-content p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #d1d1d1;
+  max-width: 500px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  animation: fadeIn 1.5s ease-in-out 0.3s;
+  animation-fill-mode: both;
+  font-style: italic;
+  opacity: 0.9;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.highlight {
+  color: #2b84ea;
+  font-weight: 600;
+}
+.b-s_btn {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn {
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.b-s_btn .btn:first-child {
+  background: #2b84ea;
+  color: #fff;
+  border: none;
+}
+.b-s_btn .btn:first-child:hover {
+  background: #1f66c1;
+  transform: translateY(-2px);
+}
+
+.b-s_btn .btn:last-child {
+  background: transparent;
+  color: #2b84ea;
+  border: 2px solid #2b84ea;
+}
+.b-s_btn .btn:last-child:hover {
+  background: #2b84ea;
+  color: #fff;
+  transform: translateY(-2px);
+}
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image img {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  margin-right: 40px;
+  object-fit: contain;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

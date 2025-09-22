@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusKart - Login / Sign Up</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="auth.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Auth Container -->
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <img src="images/logo.png" alt="CampusKart Logo" class="auth-logo" />
+          <h2>Welcome to CampusKart</h2>
+          <p>Trade smart with your campus community</p>
+          <a href="index.html" class="back-home">← Back to Home</a>
+        </div>
+
+        <!-- Toggle Buttons -->
+        <div class="auth-toggle">
+          <button class="toggle-btn active" data-target="login">Login</button>
+          <button class="toggle-btn" data-target="signup">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-form active" id="login-form">
+          <form>
+            <div class="input-group">
+              <label for="login-email"
+                ><i class="fas fa-envelope"></i> Email</label
+              >
+              <input
+                type="email"
+                id="login-email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label for="login-password"
+                ><i class="fas fa-lock"></i> Password</label
+              >
+              <input
+                type="password"
+                id="login-password"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <button type="submit" class="auth-btn">Login</button>
+            <div class="auth-footer">
+              <a href="#">Forgot Password?</a>
+            </div>
+          </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="auth-form" id="signup-form">
+          <form>
+            <div class="input-group">
+              <label for="signup-name"
+                ><i class="fas fa-user"></i> Full Name</label
+              >
+              <input
+                type="text"
+                id="signup-name"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label><i class="fas fa-venus-mars"></i> Gender</label>
+              <div class="gender-group">
+                <label class="radio-label">
+                  <input type="radio" name="gender" value="male" required />
+                  Male
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="gender" value="female" /> Female
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="gender" value="other" /> Other
+                </label>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="signup-dob"
+                ><i class="fas fa-calendar-alt"></i> Date of Birth</label
+              >
+              <input type="date" id="signup-dob" required />
+            </div>
+            <div class="input-group">
+              <label for="signup-email"
+                ><i class="fas fa-envelope"></i> Gmail</label
+              >
+              <input
+                type="email"
+                id="signup-email"
+                placeholder="Enter your Gmail"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label for="signup-phone"
+                ><i class="fas fa-phone"></i> Contact Number</label
+              >
+              <input
+                type="tel"
+                id="signup-phone"
+                placeholder="Enter 10-digit number"
+                pattern="[0-9]{10}"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label for="signup-password"
+                ><i class="fas fa-lock"></i> Password</label
+              >
+              <input
+                type="password"
+                id="signup-password"
+                placeholder="Create a password"
+                required
+                minlength="6"
+              />
+            </div>
+            <div class="input-group">
+              <label for="signup-confirm-password"
+                ><i class="fas fa-lock"></i> Confirm Password</label
+              >
+              <input
+                type="password"
+                id="signup-confirm-password"
+                placeholder="Re-enter password"
+                required
+              />
+            </div>
+            <button type="submit" class="auth-btn">Sign Up</button>
+            <div class="auth-footer">
+              <p>
+                By signing up, you agree to our <a href="#">Terms</a> &
+                <a href="#">Privacy Policy</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="auth.js"></script>
+  </body>
+</html>

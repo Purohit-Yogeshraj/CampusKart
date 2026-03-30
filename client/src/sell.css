@@ -1,0 +1,151 @@
+/* sell.css - Page-specific styles for Sell page */
+.page-container {
+  margin-top: 70px;
+  padding: 40px 5%;
+  background: #ffffff;
+}
+
+.sell-form {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.form-group i {
+  color: #2b84ea;
+  margin-right: 8px;
+  width: 16px;
+  text-align: center;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.form-control:focus {
+  border-color: #2b84ea;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: #2b84ea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-submit:hover {
+  background: #1f66c1;
+}
+
+.my-ad-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid #e6edf7;
+  box-shadow: 0 10px 24px rgba(31, 61, 94, 0.08);
+}
+
+.ad-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.ad-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.ad-btn i {
+  font-size: 0.85rem;
+}
+
+.ad-btn:hover {
+  transform: translateY(-1px);
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #ffe38a 0%, #f6c64f 100%);
+  color: #4b3510;
+  box-shadow: 0 8px 18px rgba(246, 198, 79, 0.28);
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #ffdc6e 0%, #efbb36 100%);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #ff8e84 0%, #e74c3c 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(231, 76, 60, 0.24);
+}
+
+.delete-btn:hover {
+  background: linear-gradient(135deg, #ff7a6d 0%, #db3d2d 100%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 30px 20px;
+  }
+
+  .sell-form {
+    padding: 20px;
+  }
+
+  .form-header {
+    font-size: 1.5rem;
+  }
+
+  .ad-actions {
+    flex-direction: column;
+  }
+}

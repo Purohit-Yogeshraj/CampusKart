@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#eef1f7"/>
+  <rect x="270" y="100" width="260" height="400" rx="28" fill="#2d3a4b"/>
+  <rect x="305" y="140" width="190" height="70" rx="10" fill="#cde6c7"/>
+  <g fill="#f7f9fb">
+    <rect x="310" y="245" width="48" height="48" rx="8"/>
+    <rect x="376" y="245" width="48" height="48" rx="8"/>
+    <rect x="442" y="245" width="48" height="48" rx="8"/>
+    <rect x="310" y="311" width="48" height="48" rx="8"/>
+    <rect x="376" y="311" width="48" height="48" rx="8"/>
+    <rect x="442" y="311" width="48" height="48" rx="8"/>
+    <rect x="310" y="377" width="48" height="48" rx="8"/>
+    <rect x="376" y="377" width="48" height="48" rx="8"/>
+    <rect x="442" y="377" width="48" height="48" rx="8"/>
+  </g>
+  <text x="400" y="190" text-anchor="middle" font-size="28" font-family="Arial, sans-serif" fill="#40533f">991MS</text>
+  <text x="400" y="545" text-anchor="middle" font-size="44" font-family="Arial, sans-serif" fill="#2d3a4b">Calculator</text>
+</svg>
+

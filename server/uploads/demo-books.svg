@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#fff6e8"/>
+  <rect x="190" y="150" width="110" height="280" rx="8" fill="#ff8b5e"/>
+  <rect x="310" y="130" width="110" height="300" rx="8" fill="#ffd166"/>
+  <rect x="430" y="145" width="110" height="285" rx="8" fill="#5abf90"/>
+  <rect x="550" y="165" width="70" height="265" rx="8" fill="#4b6cb7"/>
+  <text x="400" y="500" text-anchor="middle" font-size="44" font-family="Arial, sans-serif" fill="#6a4a2f">TYBCA Books</text>
+</svg>
+

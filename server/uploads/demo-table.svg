@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f2efe9"/>
+  <rect x="170" y="190" width="460" height="42" rx="8" fill="#9c6b43"/>
+  <rect x="200" y="232" width="26" height="210" fill="#7c5333"/>
+  <rect x="574" y="232" width="26" height="210" fill="#7c5333"/>
+  <rect x="270" y="260" width="260" height="110" rx="10" fill="#c8925b"/>
+  <rect x="290" y="280" width="90" height="70" rx="8" fill="#ead1b2"/>
+  <text x="400" y="505" text-anchor="middle" font-size="44" font-family="Arial, sans-serif" fill="#5b3a22">Study Table</text>
+</svg>
+

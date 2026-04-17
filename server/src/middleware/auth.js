@@ -3,17 +3,23 @@ import { User } from "../models/User.js";
 
 export async function requireAuth(req, res, next) {
   try {
-    const token = req.cookies.campuskart_token;
+    // Check cookies first, fallback to Authorization header
+    const token =
+      req.cookies.campuskart_token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ success: false, message: "Login required" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Login required" });
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(payload.userId).select("-passwordHash");
 
     if (!user) {
-      return res.status(401).json({ success: false, message: "Invalid session" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid session" });
     }
 
     req.user = user;
@@ -25,7 +31,9 @@ export async function requireAuth(req, res, next) {
 
 export async function attachUserIfPresent(req, _res, next) {
   try {
-    const token = req.cookies.campuskart_token;
+    // Check cookies first, fallback to Authorization header
+    const token =
+      req.cookies.campuskart_token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       req.user = null;

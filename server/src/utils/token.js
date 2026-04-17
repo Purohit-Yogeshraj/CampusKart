@@ -9,7 +9,7 @@ export function setAuthCookie(res, token) {
     httpOnly: true,
     sameSite: "lax",
     secure: false,
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
-

@@ -2,24 +2,37 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Listing } from "../models/Listing.js";
+import { User } from "../models/User.js";
+import { isAllowedCollege, normalizeCollegeName } from "../utils/colleges.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadsDir = path.resolve(__dirname, "../../uploads");
 
-function formatListing(listing) {
+function formatListingForViewer(listing, viewerId = null) {
+  const ownerId =
+    listing.user?._id?.toString?.() || listing.user?.toString?.() || "";
+  const isOwner = viewerId && ownerId && ownerId === viewerId.toString();
+
   return {
     id: listing._id,
     title: listing.title,
     category: listing.category,
     price: listing.price,
-    location: listing.location,
+    college: listing.college,
+    year: listing.year,
+    department: listing.department || "All Courses",
     description: listing.description,
-    phone: listing.phone,
+    phone: isOwner ? listing.phone : "",
     imagePath: listing.imagePath,
+    status: listing.status,
     postedAt: listing.createdAt,
     sellerName: listing.demoSellerName || listing.user?.username || "",
+    sellerRating: listing.user?.rating ?? 0,
+    sellerRatingCount: listing.user?.ratingCount ?? 0,
+    sellerVerified: false,
     userId: listing.user?._id || listing.user,
+    reviews: listing.reviews?.length || 0,
   };
 }
 
@@ -36,26 +49,50 @@ function removeUploadIfPresent(imagePath) {
 }
 
 export async function getListings(req, res) {
-  const { search = "", category = "" } = req.query;
-  const filters = {};
+  const {
+    search = "",
+    category = "",
+    college = "",
+    year = "",
+    department = "",
+    status = "active",
+  } = req.query;
+  const filters = { status };
 
   if (category) {
     filters.category = category;
+  }
+
+  if (college) {
+    filters.college = college;
+  }
+
+  if (year) {
+    filters.year = year;
+  }
+
+  if (department) {
+    filters.department = department;
   }
 
   if (search) {
     filters.$or = [
       { title: { $regex: search, $options: "i" } },
       { description: { $regex: search, $options: "i" } },
-      { location: { $regex: search, $options: "i" } },
     ];
   }
 
   const listings = await Listing.find(filters)
-    .populate("user", "username")
-    .sort({ createdAt: -1 });
+    .populate("user", "username rating ratingCount isVerified")
+    .sort({ createdAt: -1 })
+    .lean();
 
-  return res.json({ success: true, listings: listings.map(formatListing) });
+  return res.json({
+    success: true,
+    listings: listings.map((listing) =>
+      formatListingForViewer(listing, req.user?._id),
+    ),
+  });
 }
 
 export async function getMyListings(req, res) {
@@ -63,53 +100,141 @@ export async function getMyListings(req, res) {
     .populate("user", "username")
     .sort({ createdAt: -1 });
 
-  return res.json({ success: true, listings: listings.map(formatListing) });
+  return res.json({
+    success: true,
+    listings: listings.map((listing) =>
+      formatListingForViewer(listing, req.user._id),
+    ),
+  });
 }
 
 export async function getListingById(req, res) {
-  const listing = await Listing.findById(req.params.id).populate("user", "username");
+  const listing = await Listing.findById(req.params.id).populate({
+    path: "user",
+    select:
+      "username email rating ratingCount college department semester isVerified",
+  });
 
   if (!listing) {
-    return res.status(404).json({ success: false, message: "Listing not found" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Listing not found" });
   }
 
-  return res.json({ success: true, listing: formatListing(listing) });
+  return res.json({
+    success: true,
+    listing: {
+      ...formatListingForViewer(listing, req.user?._id),
+      phone: listing.phone,
+    },
+  });
 }
 
 export async function createListing(req, res) {
-  const { title, category, price, location, description, phone } = req.body;
+  try {
+    // Check if user is verified
+    const user = await User.findById(req.user._id);
+    if (!user || !user.isVerified) {
+      if (req.file) {
+        removeUploadIfPresent(`/uploads/${req.file.filename}`);
+      }
+      return res.status(403).json({
+        success: false,
+        message: "Please complete ID verification before posting listings",
+      });
+    }
 
-  if (!title || !category || !price || !location || !description || !phone) {
-    return res.status(400).json({ success: false, message: "All fields are required" });
+    const { title, category, price, year, department, description } = req.body;
+    const normalizedCollege = normalizeCollegeName(user.college);
+    const phone = user.contact;
+
+    if (
+      !title ||
+      !category ||
+      !price ||
+      !normalizedCollege ||
+      !year ||
+      !department ||
+      !description ||
+      !phone
+    ) {
+      if (req.file) {
+        removeUploadIfPresent(`/uploads/${req.file.filename}`);
+      }
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+    }
+
+    // Validate category
+    const validCategories = [
+      "Textbooks",
+      "Notes",
+      "Lab Coats",
+      "Electronics",
+      "Drafters",
+      "Stationery",
+      "Accessories",
+      "Other",
+    ];
+    if (!validCategories.includes(category)) {
+      if (req.file) {
+        removeUploadIfPresent(`/uploads/${req.file.filename}`);
+      }
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid category" });
+    }
+
+    if (!(await isAllowedCollege(normalizedCollege))) {
+      if (req.file) {
+        removeUploadIfPresent(`/uploads/${req.file.filename}`);
+      }
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid college selection" });
+    }
+
+    const listing = await Listing.create({
+      user: req.user._id,
+      title,
+      category,
+      price: Number(price),
+      college: normalizedCollege,
+      year,
+      department,
+      description,
+      phone,
+      imagePath: req.file ? `/uploads/${req.file.filename}` : "",
+    });
+
+    await listing.populate("user", "username rating ratingCount");
+    return res.status(201).json({
+      success: true,
+      message: "Ad posted successfully!",
+      listing: formatListingForViewer(listing, req.user._id),
+    });
+  } catch (error) {
+    if (req.file) {
+      removeUploadIfPresent(`/uploads/${req.file.filename}`);
+    }
+    return res.status(500).json({ success: false, message: error.message });
   }
-
-  const listing = await Listing.create({
-    user: req.user._id,
-    title,
-    category,
-    price: Number(price),
-    location,
-    description,
-    phone,
-    imagePath: req.file ? `/uploads/${req.file.filename}` : "",
-  });
-
-  await listing.populate("user", "username");
-  return res.status(201).json({
-    success: true,
-    message: "Ad posted successfully!",
-    listing: formatListing(listing),
-  });
 }
 
 export async function updateListing(req, res) {
-  const listing = await Listing.findOne({ _id: req.params.id, user: req.user._id }).populate("user", "username");
+  const listing = await Listing.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  }).populate("user", "username");
 
   if (!listing) {
     if (req.file) {
       removeUploadIfPresent(`/uploads/${req.file.filename}`);
     }
-    return res.status(404).json({ success: false, message: "Ad not found or access denied" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Ad not found or access denied" });
   }
 
   if (req.file) {
@@ -120,8 +245,8 @@ export async function updateListing(req, res) {
   listing.title = req.body.title ?? listing.title;
   listing.category = req.body.category ?? listing.category;
   listing.price = Number(req.body.price ?? listing.price);
-  listing.phone = req.body.phone ?? listing.phone;
-  listing.location = req.body.location ?? listing.location;
+  listing.year = req.body.year ?? listing.year;
+  listing.department = req.body.department ?? listing.department;
   listing.description = req.body.description ?? listing.description;
 
   await listing.save();
@@ -130,15 +255,20 @@ export async function updateListing(req, res) {
   return res.json({
     success: true,
     message: "Ad updated successfully",
-    listing: formatListing(listing),
+    listing: formatListingForViewer(listing, req.user._id),
   });
 }
 
 export async function deleteListing(req, res) {
-  const listing = await Listing.findOne({ _id: req.params.id, user: req.user._id });
+  const listing = await Listing.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!listing) {
-    return res.status(404).json({ success: false, message: "Ad not found or access denied" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Ad not found or access denied" });
   }
 
   removeUploadIfPresent(listing.imagePath);

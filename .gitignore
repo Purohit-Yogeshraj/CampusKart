@@ -1,7 +1,18 @@
+# Dependencies
 node_modules/
-dist/
-.env
-server/.env
-client/.env
-*.log
+**/node_modules/
 
+# Environment variables (NEVER PUSH THESE)
+.env
+**/.env
+
+# Uploaded files (ID cards, images)
+server/uploads/
+
+# Build output
+client/dist/
+client/build/
+
+# System files
+.DS_Store
+Thumbs.db

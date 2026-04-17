@@ -1,36 +1,75 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../components/Footer";
-import { ListingCard } from "../components/ListingCard";
 import { Navbar } from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 import { request } from "../utils/api";
+import { fetchColleges } from "../utils/colleges";
+
+const categories = [
+  "Textbooks",
+  "Notes",
+  "Lab Coats",
+  "Electronics",
+  "Drafters",
+  "Stationery",
+  "Accessories",
+  "Other",
+];
+
+const years = ["1st Year", "2nd Year", "3rd Year", "4th Year", "All Years"];
+
+const departments = [
+  "BCA",
+  "MCA",
+  "B.Sc",
+  "M.Sc",
+  "B.A",
+  "M.A",
+  "B.Com",
+  "M.Com",
+  "Engineering",
+  "All Courses",
+];
 
 const initialFormState = {
   title: "",
   category: "",
   price: "",
   phone: "",
-  location: "",
+  college: "",
+  year: "All Years",
+  department: "All Courses",
   description: "",
 };
 
 export function SellPage() {
+  const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
-  const [myListings, setMyListings] = useState([]);
+  const [colleges, setColleges] = useState([]);
   const navigate = useNavigate();
 
-  async function loadMyListings() {
-    const data = await request("/listings/mine");
-    setMyListings(data.listings);
-  }
+  useEffect(() => {
+    fetchColleges()
+      .then(setColleges)
+      .catch((error) => console.error("Failed to load colleges", error));
+  }, []);
+
+  const defaultCollege = useMemo(
+    () => user?.college || colleges[0]?.name || "",
+    [user?.college, colleges],
+  );
 
   useEffect(() => {
-    loadMyListings().catch((error) => {
-      alert(error.message);
-    });
-  }, []);
+    if (defaultCollege) {
+      setForm((current) => ({
+        ...current,
+        college: current.college || defaultCollege,
+      }));
+    }
+  }, [defaultCollege]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -45,7 +84,6 @@ export function SellPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const formElement = event.currentTarget;
 
     const payload = new FormData();
     Object.entries(form).forEach(([key, value]) => payload.append(key, value));
@@ -59,28 +97,7 @@ export function SellPage() {
         body: payload,
       });
       alert(data.message);
-      setForm(initialFormState);
-      setImage(null);
-      setPreview("");
-      formElement.reset();
-      await loadMyListings();
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
-  async function handleDelete(id) {
-    const shouldDelete = window.confirm("Are you sure you want to delete this ad?");
-    if (!shouldDelete) {
-      return;
-    }
-
-    try {
-      const data = await request(`/listings/${id}`, {
-        method: "DELETE",
-      });
-      alert(data.message);
-      await loadMyListings();
+      navigate("/dashboard?tab=listings");
     } catch (error) {
       alert(error.message);
     }
@@ -94,66 +111,173 @@ export function SellPage() {
           <h2 className="form-header">Post a New Item</h2>
           <form id="post-ad-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label><i className="fas fa-tag"></i> Item Title</label>
-              <input type="text" name="title" className="form-control" placeholder="e.g. Physics Textbook" required value={form.title} onChange={handleChange} />
+              <label>
+                <i className="fas fa-tag"></i> Item Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                className="form-control"
+                placeholder="e.g. BCA Semester 3 Java Book"
+                required
+                value={form.title}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-list"></i> Category</label>
-              <select name="category" className="form-control" required value={form.category} onChange={handleChange}>
+              <label>
+                <i className="fas fa-list"></i> Category
+              </label>
+              <select
+                name="category"
+                className="form-control"
+                required
+                value={form.category}
+                onChange={handleChange}
+              >
                 <option value="">Select Category</option>
-                <option value="Books">Books</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Others">Others</option>
+                {categories.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="form-group">
-              <label><i className="fas fa-dollar-sign"></i> Price (₹)</label>
-              <input type="number" name="price" className="form-control" placeholder="e.g. 500" min="1" required value={form.price} onChange={handleChange} />
+              <label>
+                <i className="fas fa-dollar-sign"></i> Price (Rs.)
+              </label>
+              <input
+                type="number"
+                name="price"
+                className="form-control"
+                placeholder="e.g. 500"
+                min="1"
+                required
+                value={form.price}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-phone"></i> Your Phone Number</label>
-              <input type="tel" name="phone" className="form-control" placeholder="e.g. 9876543210" pattern="[0-9]{10}" required value={form.phone} onChange={handleChange} />
+              <label>
+                <i className="fas fa-phone"></i> Your Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                className="form-control"
+                value={user?.contact || ""}
+                readOnly
+                style={{
+                  backgroundColor: "#f0f4f8",
+                  cursor: "not-allowed",
+                  color: "#6b7785",
+                }}
+              />
+              <small style={{ color: "#7f8c8d" }}>
+                Your phone number stays private on public listings. Buyers see
+                only in-app chat first.
+              </small>
             </div>
             <div className="form-group">
-              <label><i className="fas fa-map-marker-alt"></i> Location</label>
-              <input type="text" name="location" className="form-control" placeholder="e.g. Hostel A, Block 3" required value={form.location} onChange={handleChange} />
+              <label>
+                <i className="fas fa-building"></i> College
+              </label>
+              <input
+                type="text"
+                name="college"
+                className="form-control"
+                value={user?.college || ""}
+                readOnly
+                style={{
+                  backgroundColor: "#f0f4f8",
+                  cursor: "not-allowed",
+                  color: "#6b7785",
+                }}
+              />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-comment"></i> Description</label>
-              <textarea name="description" className="form-control" rows="4" placeholder="Describe condition, reason for selling, etc." required value={form.description} onChange={handleChange}></textarea>
+              <label>
+                <i className="fas fa-graduation-cap"></i> Target Year
+              </label>
+              <select
+                name="year"
+                className="form-control"
+                required
+                value={form.year}
+                onChange={handleChange}
+              >
+                {years.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
-              <label><i className="fas fa-image"></i> Item Photo (Optional)</label>
-              <input type="file" className="form-control" accept="image/jpeg,image/png" onChange={handleImageChange} />
-              <div id="image-preview" style={{ marginTop: "10px", display: preview ? "block" : "none" }}>
-                <img src={preview} alt="Preview" style={{ maxWidth: "100%", maxHeight: "200px", borderRadius: "8px" }} />
+              <label>
+                <i className="fas fa-book"></i> Targeted Course
+              </label>
+              <select
+                name="department"
+                className="form-control"
+                required
+                value={form.department}
+                onChange={handleChange}
+              >
+                {departments.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>
+                <i className="fas fa-comment"></i> Description
+              </label>
+              <textarea
+                name="description"
+                className="form-control"
+                rows="4"
+                placeholder="Describe condition, subject, author, edition, or reason for selling"
+                required
+                value={form.description}
+                onChange={handleChange}
+              ></textarea>
+            </div>
+            <div className="form-group">
+              <label>
+                <i className="fas fa-image"></i> Item Photo (Optional)
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                accept="image/jpeg,image/png"
+                onChange={handleImageChange}
+              />
+              <div
+                id="image-preview"
+                style={{
+                  marginTop: "10px",
+                  display: preview ? "block" : "none",
+                }}
+              >
+                <img
+                  src={preview}
+                  alt="Preview"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                  }}
+                />
               </div>
             </div>
-            <button type="submit" className="btn-submit">Post Ad</button>
+            <button type="submit" className="btn-submit">
+              Post Ad
+            </button>
           </form>
-        </div>
-
-        <div className="my-ads-section" style={{ marginTop: "40px" }}>
-          <h2 className="my-ads-header" style={{ textAlign: "center", marginBottom: "20px", color: "#2c3e50" }}>
-            Your Posted Ads
-          </h2>
-          {myListings.length > 0 ? (
-            <div className="my-listings-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px", marginTop: "20px" }}>
-              {myListings.map((item) => (
-                <ListingCard
-                  key={item.id}
-                  item={item}
-                  editable
-                  onEdit={(listingId) => navigate(`/edit/${listingId}`)}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          ) : (
-            <p style={{ textAlign: "center", color: "#7f8c8d" }}>You haven't posted any ads yet.</p>
-          )}
         </div>
       </div>
       <Footer />

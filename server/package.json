@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "seed:demo": "node src/scripts/seedDemoListings.js"
+    "seed:demo": "node src/scripts/seedDemoListings.js",
+    "seed:admin": "node src/scripts/seedAdminUser.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -17,6 +18,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "nodemailer": "^8.0.5",
+    "socket.io": "^4.7.2"
   }
 }

@@ -11,7 +11,9 @@
 
 .auth-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .auth-card {
@@ -98,6 +100,18 @@
   }
 }
 
+/* Form Section Title */
+.form-section-title {
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #2b84ea;
+}
+
 .input-group {
   text-align: left;
   margin-bottom: 20px;
@@ -122,7 +136,10 @@
 .input-group input[type="email"],
 .input-group input[type="tel"],
 .input-group input[type="password"],
-.input-group input[type="date"] {
+.input-group input[type="date"],
+.input-group input[type="number"],
+.input-group input[type="file"],
+.input-group select {
   width: 100%;
   padding: 12px 15px;
   border: 2px solid #e0e0e0;
@@ -130,10 +147,41 @@
   font-size: 1rem;
   transition: border 0.3s ease;
   outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.input-group select:focus {
   border-color: #2b84ea;
+}
+
+.input-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 35px;
+}
+
+.input-group small {
+  display: block;
+  margin-top: 5px;
+  color: #95a5a6;
+  font-size: 0.85rem;
+}
+
+/* Form Row for side-by-side inputs */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-row .input-group {
+  margin-bottom: 0;
 }
 
 /* Gender Radio Buttons */
@@ -197,7 +245,11 @@
 }
 
 /* Responsive */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .auth-container {
+    max-width: 100%;
+  }
+
   .auth-card {
     padding: 30px 20px;
   }
@@ -221,5 +273,13 @@
 
   .radio-label {
     font-size: 0.9rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section-title {
+    font-size: 1rem;
   }
 }

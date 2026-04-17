@@ -38,6 +38,13 @@ export function Navbar({ active = "" }) {
             Sell
           </NavLink>
         </li>
+        {user?.role === "admin" && (
+          <li>
+            <NavLink className={`nav-link ${active === "admin" ? "active" : ""}`} to="/admin">
+              Admin
+            </NavLink>
+          </li>
+        )}
         <li>
           <a className="nav-link" href="/#developers-section">
             About us
@@ -48,16 +55,25 @@ export function Navbar({ active = "" }) {
       <div className="auth-buttons">
         {user ? (
           <>
-            <span
-              style={{
-                color: "#ffffff",
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Welcome, {user.username}
-            </span>
+            <div className="user-menu">
+              <span className="user-name">Welcome, {user.username}</span>
+              <div className="user-actions">
+                <Link to="/dashboard" className="btn-small" title="Dashboard">
+                  <i className="fas fa-user-circle"></i>
+                </Link>
+                <Link to="/dashboard?tab=wishlist" className="btn-small" title="Wishlist">
+                  <i className="fas fa-heart"></i>
+                </Link>
+                <Link to="/dashboard?tab=messages" className="btn-small" title="Messages">
+                  <i className="fas fa-envelope"></i>
+                </Link>
+                {user.role === "admin" && (
+                  <Link to="/admin" className="btn-small" title="Admin Panel">
+                    <i className="fas fa-shield-alt"></i>
+                  </Link>
+                )}
+              </div>
+            </div>
             <button
               type="button"
               className="btn-login-signup"

@@ -14,18 +14,50 @@ const listingSchema = new mongoose.Schema(
     },
     category: {
       type: String,
+      enum: [
+        "Textbooks",
+        "Notes",
+        "Lab Coats",
+        "Electronics",
+        "Drafters",
+        "Stationery",
+        "Accessories",
+        "Other",
+      ],
+      default: "Other",
       required: true,
-      trim: true,
     },
     price: {
       type: Number,
       required: true,
       min: 0,
     },
-    location: {
+    college: {
       type: String,
       required: true,
       trim: true,
+    },
+    year: {
+      type: String,
+      enum: ["1st Year", "2nd Year", "3rd Year", "4th Year", "All Years"],
+      default: "All Years",
+    },
+    department: {
+      type: String,
+      required: true,
+      enum: [
+        "BCA",
+        "MCA",
+        "B.Sc",
+        "M.Sc",
+        "B.A",
+        "M.A",
+        "B.Com",
+        "M.Com",
+        "Engineering",
+        "All Courses",
+      ],
+      default: "All Courses",
     },
     description: {
       type: String,
@@ -45,10 +77,35 @@ const listingSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    // Listing status
+    status: {
+      type: String,
+      enum: ["active", "sold", "removed"],
+      default: "active",
+    },
+    // Reviews and ratings
+    reviews: [
+      {
+        buyer: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        rating: {
+          type: Number,
+          min: 1,
+          max: 5,
+        },
+        comment: String,
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const Listing = mongoose.model("Listing", listingSchema);
